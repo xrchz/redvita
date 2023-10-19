@@ -111,13 +111,6 @@ def receiveFlashLoan(
   permit2.approve(assetToken.address, vault.address, assetBalance, 0)
   pathLength: uint256 = len(_data) - NARGS * 32
   universalRouter.execute(b"\x01", [
-    concat(
-      convert(self, bytes32),
-      convert(_amounts[0], bytes32),
-      convert(assetBalance, bytes32),
-      convert(convert(5 * 32, uint256), bytes32),
-      convert(True, bytes32),
-      convert(pathLength, bytes32),
-      slice(_data, NARGS * 32, pathLength) # assume already padded to multiple of 32 bytes
-    )])
+    _abi_encode(self, _amounts[0], assetBalance,
+                slice(_data, NARGS * 32, len(_data) - NARGS * 32), ensure_tuple=False)])
   debtToken.transfer(vault.address, _amounts[0])
